@@ -1,4 +1,3 @@
-import sys
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
@@ -8,6 +7,8 @@ from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout
 )
+
+import numpy as np
 
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
@@ -88,6 +89,18 @@ class IceCreamWindow(QMainWindow):
         # Scatter plot with point size = 1
         ax.scatter(self.temperatures, self.profits, s=1)
 
+        # Linear regression trendline using np.polyfit
+        x = np.array(self.temperatures)
+        y = np.array(self.profits)
+        m, b = np.polyfit(x, y, 1)
+
+        x_line = np.linspace(x.min(), x.max(), 100)
+        y_line = m * x_line + b
+        equation_text = f'y = {m:.2f}x + {b:.2f}'
+
+        ax.plot(x_line, y_line, color='red', linewidth=1.5, label=equation_text)
+        ax.legend()
+
         # Remove top and right borders
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
@@ -105,9 +118,9 @@ class IceCreamWindow(QMainWindow):
         self.about_window.show()
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+    app = QApplication()
     with open('style.qss', 'r') as f:
         app.setStyleSheet(f.read())
     window = IceCreamWindow()
     window.show()
-    sys.exit(app.exec())
+    app.exec()
