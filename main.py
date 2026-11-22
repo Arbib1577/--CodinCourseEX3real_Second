@@ -56,7 +56,48 @@ class IceCreamWindow(QMainWindow):
         self.canvas.draw()
 
     def load_file(self):
-        pass
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            'Select Ice Cream CSV File',
+            '',
+            'CSV Files (*.csv);;All Files (*)'
+        )
+        if not file_path:
+            return
+
+        self.file_label.setText(file_path.split('/')[-1])
+        self.temperatures.clear()
+        self.profits.clear()
+
+        with open(file_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for line in lines[1:]:
+            line = line.strip()
+            if line:
+                parts = line.split(',')
+                self.temperatures.append(float(parts[0]))
+                self.profits.append(float(parts[1]))
+
+        self.plot_data()
+
+    def plot_data(self):
+        self.figure.clear()
+        ax = self.figure.add_subplot(111)
+
+        # Scatter plot with point size = 1
+        ax.scatter(self.temperatures, self.profits, s=1)
+
+        # Remove top and right borders
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+        # Title and axis labels
+        ax.set_title('Ice Cream Sales Profits vs. Outside Temperature')
+        ax.set_xlabel('Outside Temperature (°C)')
+        ax.set_ylabel('Ice Cream Sales Profits ($)')
+
+        self.canvas.draw()
 
     def open_about(self):
         if self.about_window is None:
