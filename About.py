@@ -39,7 +39,7 @@ class AboutWindow(QWidget):
 
         # bonus
         self.btn_copy = QPushButton('Copy', self)
-        self.btn_copy.setGeometry(295, 80, 65, 25)
+        self.btn_copy.setGeometry(295, 78, 65, 30)
         self.btn_copy.setStyleSheet('background-color: #dcdde1;')
         self.btn_copy.clicked.connect(self.copy_email)
 

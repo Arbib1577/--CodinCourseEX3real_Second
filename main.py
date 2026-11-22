@@ -18,4 +18,55 @@ class IceCreamWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle('Ice Cream Sales Analyzer')
         self.setGeometry(200,100,760,620)
-        
+
+        self.temperatures = []
+        self.profits = []
+
+        self.load_btn=QPushButton('Select CSV File', self)
+        self.load_btn.setGeometry(30,20,170,38)
+        self.load_btn.clicked.connect(self.load_file)
+
+        self.file_label= QLabel('No file selected', self)
+        self.file_label.setGeometry(215,20,360,38)
+
+        self.about_btn = QPushButton('About', self)
+        self.about_btn.setObjectName('about_btn')
+        self.about_btn.setGeometry(610, 20, 120, 38)
+        self.about_btn.clicked.connect(self.open_about)
+
+        self.plot_container = QWidget(self)
+        self.plot_container.setGeometry(30, 75, 700, 515)
+        plot_layout = QVBoxLayout(self.plot_container)
+
+        self.figure = Figure()
+        self.canvas = FigureCanvasQTAgg(self.figure)
+        self.toolbar = NavigationToolbar2QT(self.canvas, self)
+
+        plot_layout.addWidget(self.toolbar)
+        plot_layout.addWidget(self.canvas)
+
+        self.about_window = None
+        self.plot_placeholder()
+
+    def plot_placeholder(self):
+        self.figure.clear()
+        ax= self.figure.add_subplot(111)
+        ax.plot([1,2,3,4],[10,20,35,30])
+        ax.set_title('Temporary Graph (Load CSV to Update)')
+        self.canvas.draw()
+
+    def load_file(self):
+        pass
+
+    def open_about(self):
+        if self.about_window is None:
+            self.about_window = AboutWindow()
+        self.about_window.show()
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    with open('style.qss', 'r') as f:
+        app.setStyleSheet(f.read())
+    window = IceCreamWindow()
+    window.show()
+    sys.exit(app.exec())
